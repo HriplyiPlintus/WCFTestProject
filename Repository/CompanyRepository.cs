@@ -4,16 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Oracle.DataAccess.Client;
+using Oracle.ManagedDataAccess.Client;
 using Domain;
 using System.Data;
+using ServiceInterface;
+using System.Configuration;
 
-namespace DataAccess {
-    public class CompanyRepository {
+namespace Repository {
+    public class CompanyRepository : IRepository {
         //connection string: "Data Source=demo; id=taxworker; password=091191;"
         private string _connStr;
-        public CompanyRepository(string connString) {
-            _connStr = connString;
+
+        public CompanyRepository() {
+            _connStr = "Data Source=DEMO;User Id=taxworker;Password=091191;";
+            //ConfigurationManager.ConnectionStrings["OracleConnectionString"].ConnectionString; //- почему это говно не работает?
         }
 
         public Company GetByKey(string key) {
@@ -34,14 +38,14 @@ namespace DataAccess {
 
         public IEnumerable<Company> GetAll() {
             using (var conn = CreateConnection()) {
-                using(var cmd = conn.CreateCommand()) {
+                using (var cmd = conn.CreateCommand()) {
                     cmd.CommandText = "select * from company";
                     cmd.CommandType = CommandType.Text;
 
                     conn.Open();
 
                     var result = new List<Company>();
-                    
+
                     var reader = cmd.ExecuteReader();
                     while (reader.Read()) {
                         result.Add(CompanyHelper.Map(reader));

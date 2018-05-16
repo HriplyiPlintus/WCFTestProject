@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Domain;
 using System.Data.Common;
 
-namespace DataAccess {
+namespace Repository {
     public static class CompanyHelper {
         public static Company Map(DbDataReader record) {
             return new Company {
